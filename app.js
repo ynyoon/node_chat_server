@@ -3,8 +3,10 @@ const port = process.env.port || 3000;
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server)      //socket.io 를 사용하기 위한 io 객체 생성
-const users = {};                                    //기본 회원이 담기는 object
+let users = {};                                    //기본 회원이 담기는 object
 const onlineUsers = {};                                   //현재 online인 회원이 담기는 object
+
+users = {'admin' :{id:'admin', pw: '1'}};
 
 app.use(express.static('public'));                 //정적파일(css, js...)을 사용하기 위한 path지정
 
