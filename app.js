@@ -76,7 +76,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         if (!socket.id) return;
         let id = getUserBySocketId(socket.id);
-        if (id === undefined || id === null) {
+        if(id === undefined || id === null){
             return;
         }
         let roomId = onlineUsers[id].rooId || 0;
@@ -97,25 +97,25 @@ io.sockets.on('connection', function (socket) {
         let nextRoomId = data.roomId;
         socket.leave('room' + prevRoomId);
         socket.join('room' + nextRoomId);
-        onlinUsers[id].roomId = data.roomId;
+        onlineUsers[id].roomId = data.roomId;
         updateUserList(prevRoomId, nextRoomId, id);
     });
 
     // 3. (s) 이제 방에 새로운 멤버가 들어왔으니 member list 업데이트 이벤트 발생
     function updateUserList(prev, next, id) {
         if (prev !== 0) {
-            io.socket.in('room' + prev).emit("userlist", getUserByRoomId(prev));
-            io.socket.in('room' + prev).emit("lefted room", id);
+            io.sockets.in('room' + prev).emit("userlist", getUserByRoomId(prev));
+            io.sockets.in('room' + prev).emit("lefted room", id);
             console.log("prev" + prev);
         }
         if (next !== 0) {
-            io.socket.in('room' + next).emit("userlist", getUserByRoomId(next));
-            io.socket.in('room' + next).emit("joined room", id);
+            io.sockets.in('room' + next).emit("userlist", getUserByRoomId(next));
+            io.sockets.in('room' + next).emit("joined room", id);
             console.log("next" + prev);
         }
     }
 
-    function getUserByRoomdId(roomId) {
+    function getUserByRoomId(roomId) {
         let userstemp = [];
         Object.keys(onlineUsers).forEach((el) => {
             if (onlineUsers[el].roomId === roomId) {

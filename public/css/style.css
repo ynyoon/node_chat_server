@@ -129,7 +129,7 @@ nav{
 }
 
 .roomEl:hover{
-    background: #f0f0f0;
+    background: #f0c0f1;
 }
 
 .roomEl.active{
@@ -248,4 +248,10 @@ nav{
     padding-top: 20px;
     display: flex;
     justify-content: space-around;
+}
+/* 유저가 채팅방에 들어오거나 나갔을 때 공지해주는 코드이다. 이 마크업에 스타일을 조금 입혀주자.*/
+.notice {
+    text-align: center;
+    color: gray;
+    font-size: 13px;
 }
