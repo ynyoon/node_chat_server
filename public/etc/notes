@@ -1,3 +1,6 @@
+참조사이트 PAPICO'S DEVELOG
+https://pa-pico.tistory.com/4?category=839605
+
 1. 기본 패키지 설치
     npm i --save express
     npm i --save socketio

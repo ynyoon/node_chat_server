@@ -15,6 +15,12 @@ html, body {
     display: block;
 }
 
+#contentWrap {
+    width: 100%;
+    min-width: 1280px;
+    display: none;
+}
+
 .btn {
     background: #fff;
     padding: 7px 40px;
