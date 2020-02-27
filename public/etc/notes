@@ -21,3 +21,27 @@ https://pa-pico.tistory.com/4?category=839605
         채팅방에 들어온 user 목록
         간단하게 개발할 것이여서 기능은 이정도이다.
         그럼 이제 실제로 app.js 파일을 열어서 서버 기본 설정을 해보겠다.
+
+
+3. 접속기능
+채팅 방에 들어가는 플로우(흐름) 은 아주 간단하다. 이해하기 쉽게 클라이언트측 동작은 앞에 (c) , 서버측 동작은 앞에 (s) 를 붙히겠다.
+    1. (c) 채팅방 목록중에 아무거나 클릭하면 join room 이벤트 발생
+    2. (s) join room 이벤트 발생시 기존에 있던 방에서 나가고 새로운 방에 입장 socket.join()
+    3. (s) 이제 방에 새로운 멤버가 들어왔으니 member list 업데이트 이벤트 발생 userlist
+    4. (c) userlist 이벤트 발생시 memberWrap 에 있는 데이터를 서버한테 받은 데이터로 갱신
+    5. (s) 유저가 disconnect 할때나 로그아웃할 때도 userlist update 이벤트 발생
+    6. (c) 유저가 들어오거나 떠날 때 공지해주기
+    7. 우선 서버측 부터 구현할 것 이므로 2, 3, 5 를 다같이 구현해보자.
+
+4. 채팅기능
+    1. (c) chatForm 으로 입력받은 값을 서버로 보낸다. send message 이벤트 발생
+    2. (s) send message 이벤트 발생 시 이벤트를 발생시킨 소켓의 socket.id와 roomId 를 가져와 new message 이벤트 발생
+    3. (c) new message 이벤트 발생 시 chatLog 에 해당 메세지 내용 추가
+
+5. 마무리 및 개선할점
+    Datebase 연결
+    새로고침했을 때 나가짐 (세션 구현)
+    채팅 기록 (db 연결하면 해결 가능)
+    채팅방 만들기 (이것 또한 db 로 해결 가능)
+
+    

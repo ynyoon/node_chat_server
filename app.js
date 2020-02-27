@@ -34,14 +34,6 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-    function joincheck(data) {
-        if (users.hasOwnProperty(data.id)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     socket.on("login user", function (data, cb) {
         if (loginCheck(data)) {
             onlineUsers[data.id] = { roomId: 1, socketId: socket.id };
@@ -54,14 +46,6 @@ io.sockets.on('connection', function (socket) {
             return false;
         }
     });
-
-    function loginCheck(data) {
-        if (users.hasOwnProperty(data.id) && users[data.id].pw === data.pw) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     //사용자가 로그아웃 버튼 클릭시 발생
     socket.on('logout', function () {
@@ -83,11 +67,7 @@ io.sockets.on('connection', function (socket) {
         delete onlineUsers[getUserBySocketId(socket.id)];
         updateUserList(roomId, 0, id);
     });
-
-    function getUserBySocketId(id) {
-        return Object.keys(onlineUsers).find(key => onlineUsers[key].socketId === id);
-    }
-
+    
     // 2. (s) join room 이벤트 발생시 기존에 있던 방에서 나가고 새로운 방에 입장 socket.join()
     // 사용자가 로그인을 했을때 default 로 입장되는 방은 Everyone 이고 이방의 roomId는 1 이므로 로그인 할때 socket.join('room1'); 을 이용해 Everyone 방에 입장하였다.
     // 그리고 join room 이벤트가 발생하면 기존에 있던 방을 떠나고 새로운 방에 join 한다. 그리고 onlineUsers 에 있는 roomId 를 갱신해준다.
@@ -101,17 +81,43 @@ io.sockets.on('connection', function (socket) {
         updateUserList(prevRoomId, nextRoomId, id);
     });
 
+    socket.on("send message", function (data) {
+        io.sockets.in('room' + data.roomId).emit('new message', {
+            name: getUserBySocketId(socket.id),
+            socketId: socket.id,
+            msg: data.msg
+        });
+    });
+
+    function joincheck(data) {
+        if (users.hasOwnProperty(data.id)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function loginCheck(data) {
+        if (users.hasOwnProperty(data.id) && users[data.id].pw === data.pw) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function getUserBySocketId(id) {
+        return Object.keys(onlineUsers).find(key => onlineUsers[key].socketId === id);
+    }
+
     // 3. (s) 이제 방에 새로운 멤버가 들어왔으니 member list 업데이트 이벤트 발생
     function updateUserList(prev, next, id) {
         if (prev !== 0) {
             io.sockets.in('room' + prev).emit("userlist", getUserByRoomId(prev));
             io.sockets.in('room' + prev).emit("lefted room", id);
-            console.log("prev" + prev);
         }
         if (next !== 0) {
             io.sockets.in('room' + next).emit("userlist", getUserByRoomId(next));
             io.sockets.in('room' + next).emit("joined room", id);
-            console.log("next" + prev);
         }
     }
 
@@ -128,6 +134,7 @@ io.sockets.on('connection', function (socket) {
         return userstemp;
     }
 
+    
 
 
     // 5. (s) 유저가 disconnect 할때나 로그아웃할 때도 userlist update 이벤트 발생

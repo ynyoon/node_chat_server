@@ -90,6 +90,7 @@ $(function () {
         }
     });
 
+    // 4. (c) userlist 이벤트 발생시 memberWrap 에 있는 데이터를 서버한테 받은 데이터로 갱신
     socket.on('userlist', function (data) {
         let html = "";
         data.forEach((el) => {
@@ -100,6 +101,39 @@ $(function () {
             }
         });
         $memberSelect.html(html);
-    })
+    });
+
+    socket.on('lefted room', function (data) {
+        $chatLog.append(`<div class="notice"><strong>${data}</strong> lefted the room</div>`)
+    });
+    socket.on('joined room', function (data) {
+        $chatLog.append(`<div class="notice"><strong>${data}</strong> joined the room</div>`)
+    });
+
+    socket.on('new message', function (data) {
+        if (data.socketId === socketId) {
+            $chatLog.append(`<div class="myMsg msgEl"><span class="msg">${data.msg}</span></div>`)
+        }else {
+            $chatLog.append(`<div class="anotherMsg msgEl"><span class="anotherName">${data.name}</span><span class="msg">${data.msg}</span></div>`)
+        }
+        $chatLog.scrollTop($chatLog[0].scrollHeight - $chatLog[0].clientHeight);
+    });
+
+    $chatForm.submit(function (e) {
+        e.preventDefault();
+        let msg = $("#message");
+        if (msg.val() === "") {
+            return false;
+        } else {
+            let data = {
+                roomId: roomId,
+                msg: msg.val()
+            };
+            socket.emit("send message", data);
+            msg.val("");
+            msg.focus();
+        }
+    });
+
 });
 
