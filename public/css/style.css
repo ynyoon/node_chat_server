@@ -39,7 +39,7 @@ form input[type=text], form input[type=password] {
 
 input[type=button],
 input[type=submit],
-button {
+.button {
     cursor: pointer;
 }
 

@@ -15,8 +15,8 @@ $(function(){
     });
 
     const socket = io.connect();
-    const roomId = 1;
-    const socketId = "";
+    let roomId = 1;
+    let socketId = "";
     const $userWrap = $('#userWrap');
     const $contentWrap = $('#contentWrap');
 
@@ -29,7 +29,7 @@ $(function(){
             return false;
         } else {
             socket.emit('login user', {id: id.val(), pw: pw.val()}, function (res) {
-                console.log(res.result);
+                console.log('login user : ' + res.result);
                 if (res.result) {
                     alert(res.data);
                     socketId = socket.id;
@@ -57,6 +57,7 @@ $(function(){
             return false;
         } else {
             socket.emit('join user', {id: id.val(), pw: pw.val()}, function (res) {
+                console.log("result : " +res.result);
                 if (res.result) {
                     alert(res.data);
                     id.val("");
