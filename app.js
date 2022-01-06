@@ -59,15 +59,16 @@ io.sockets.on('connection', function (socket) {
     //client와 연결이 끊어졌을때 발생
     socket.on('disconnect', function () {
         if (!socket.id) return;
-        let id = getUserBySocketId(socket.id);
-        if(id === undefined || id === null){
+            let id = getUserBySocketId(socket.id);
+            console.log(`disconnected : ${id}`);
+        if (id === undefined || id === null) {
             return;
         }
         let roomId = onlineUsers[id].rooId || 0;
         delete onlineUsers[getUserBySocketId(socket.id)];
         updateUserList(roomId, 0, id);
     });
-    
+
     // 2. (s) join room 이벤트 발생시 기존에 있던 방에서 나가고 새로운 방에 입장 socket.join()
     // 사용자가 로그인을 했을때 default 로 입장되는 방은 Everyone 이고 이방의 roomId는 1 이므로 로그인 할때 socket.join('room1'); 을 이용해 Everyone 방에 입장하였다.
     // 그리고 join room 이벤트가 발생하면 기존에 있던 방을 떠나고 새로운 방에 join 한다. 그리고 onlineUsers 에 있는 roomId 를 갱신해준다.
@@ -134,7 +135,7 @@ io.sockets.on('connection', function (socket) {
         return userstemp;
     }
 
-    
+
 
 
     // 5. (s) 유저가 disconnect 할때나 로그아웃할 때도 userlist update 이벤트 발생
